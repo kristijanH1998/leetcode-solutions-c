@@ -14,7 +14,6 @@ char* intToRoman(int num) {
         pow_of_ten++;
         temp = temp / 10;
     }
-    // printf("%d\n", pow_of_ten);
     char *res = (char*) malloc ((pow_of_ten + 1) * sizeof(char));
     temp = num;
     int roman_num_values[7] = {1000, 500, 100, 50, 10, 5, 1};
@@ -26,54 +25,64 @@ char* intToRoman(int num) {
             return res;
         }
     }
-    //Otherwise, start breaking num down digit by digit
-    while(pow_of_ten > 0 && (num > 0)) {
+    //Otherwise, start breaking num down digit by digit, filling the result with Roman letters accordingly
+    while((pow_of_ten > 0) && (num > 0)) {
         int current_digit = num / (int) pow(10, pow_of_ten - 1);
         if(!((current_digit == 4) || (current_digit == 9))) {
-            // for(int i = ((pow_of_ten == 4) ? 0 : ((pow_of_ten == 3) ? 1 : 3));
-            //     i < (sizeof(roman_num_values) / sizeof(int)); i++) {
-            //         while((num - roman_num_values[i]) > 0) {
-            //             res = strcat(res, roman_num_letters[i]);
-            //             num = num - roman_num_values[i];
-            //         }
-                    
-            // }
             {
                 int i = ((pow_of_ten == 4) ? 0 : ((pow_of_ten == 3) ? 1 : ((pow_of_ten == 2) ? 3 : 5)));
                 while(!((num - roman_num_values[i]) >= 0)) {
                     i++;
                 }
                 for(; (num - roman_num_values[i]) >= 0; i++) {
-                    // printf("i skipped; i is %d\n", i);
                     while((num - roman_num_values[i]) >= 0) {
                         res = strcat(res, roman_num_letters[i]);
                         num = num - roman_num_values[i];
                     }
+                    if(((pow_of_ten - 2) >= 0) && (((num / (int) pow(10, pow_of_ten - 2)) == 4) || 
+                        ((num / (int) pow(10, pow_of_ten - 2)) == 9))) {
+                        break;
+                    }
                 }
             }
-            
-
-
-
-            pow_of_ten--;
+        } else {  //If next digit is 4 or 9, process it using subtractive form (one symbol subtracted from the following symbol, as in 4 being 1(I) less than the following 5 (V), so 4 is IV)
+            switch(pow_of_ten) {
+                case 3:
+                    if(num >= 900) {
+                        res = strcat(res, "CM");
+                        num = num - 900;
+                    } else {
+                        res = strcat(res, "CD");
+                        num = num - 400;
+                    }
+                    break;
+                case 2:
+                    if(num >= 90) {
+                        res = strcat(res, "XC");
+                        num = num - 90;
+                    } else {
+                        res = strcat(res, "XL");
+                        num = num - 40;
+                    }
+                    break;
+                case 1:
+                    if(num == 9) {
+                        res = strcat(res, "IX");
+                        num = num - 9;
+                    } else {
+                        res = strcat(res, "IV");
+                        num = num - 4;
+                    }
+                    break;
+            }
         }
-        // num = num % (int) pow(10, pow_of_ten);
-        
+        pow_of_ten--;
     }
-
-    // char *str = strcat(res, "abcdefghijkl");
-    // printf("%s\n", str);
-
     return res;
 }
 
 int main() {
-    // int pow_of_ten = 2;
-    // int i = ((pow_of_ten == 4) ? 0 : ((pow_of_ten == 3) ? 1 : ((pow_of_ten == 2) ? 3 : 5)));
-    // printf("%d\n", i);
-
-
-    char *result = intToRoman(115);
+    char *result = intToRoman(3444);
     printf("%s\n", result);
     return 0;
 }
