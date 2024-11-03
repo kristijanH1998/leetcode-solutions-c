@@ -128,7 +128,7 @@ char* intToRoman(int num) {
 }
 
 int main() {
-    char *result = intToRoman(989);
+    char *result = intToRoman(99);
     printf("%s\n", result);
     return 0;
 }
