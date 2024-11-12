@@ -26,9 +26,11 @@ bool tripletSubsetOf(int* triplet1, int* triplet2) {
 }
 
 int** threeSum(int* nums, int numsSize, int* returnSize, int** returnColumnSizes) {
-    // for(int i = 0; i < numsSize; i++) {
-    //     printf("%d\n", *(nums + i));
-    // }
+    
+    // printf("%p\n", returnColumnSizes);
+    // printf("%p\n", *returnColumnSizes);
+    // printf("%d\n", *(*(returnColumnSizes + 0)));
+
     int triplets_row_index = 0;  //increasing variable that determines how many rows (integer arrays) will be allocated for triplets (in other words, how many triplets will be in the result)
     const int triplets_cols = 3; //constant that determines how many columns should be in each triplet row (3)
     int **triplets = (int **) malloc ((triplets_row_index + 1) * sizeof(int *));
@@ -41,22 +43,40 @@ int** threeSum(int* nums, int numsSize, int* returnSize, int** returnColumnSizes
                 if((*(nums + j) + *(nums + k) + *(nums + l)) == 0) {
                     int test_triplet[] = {*(nums + j),*(nums + k),*(nums + l)};
                     bool equal_triplet_found = false;
+                    //this loop checks whether current three values (from nums) in temporary test_triplet are the same values found in any of the triplets being returned by the function
+                    //if the three values match all of the three values from any triplet, then they are ignored because adding them as a new triplet would cause duplicate triplets in returned matrix
                     for(int i = 0; i < triplets_row_index; i++) {
                         if(tripletSubsetOf(test_triplet, *(triplets + i)) && 
                             tripletSubsetOf(*(triplets + i), test_triplet)) {
                                 equal_triplet_found = true;
                         }
                     }
-                    //Triplet with identical values not found in matrix to be returned
+                    //Triplet with identical values not found in matrix to be returned, so add the three values from nums as a new triplet to the matrix to be returned
                     if(!equal_triplet_found) {
                         *(*(triplets + triplets_row_index) + 0) = *(nums + j);
                         *(*(triplets + triplets_row_index) + 1) = *(nums + k);
                         *(*(triplets + triplets_row_index) + 2) = *(nums + l);
+
+                        //fill the returnColumnSizes array with another integer which represents the size of the triplet (always equal to 3) that was added to triplets matrix in this iteration
+                        // *(*(returnColumnSizes + triplets_row_index)) = triplets_cols;
+                        
                         triplets_row_index++;
+                        //reallocate triplets matrix by adding another int pointer (for int array) for the next triplet to be inserted in next iteration of the loop
                         triplets = (int**) realloc (triplets, (triplets_row_index + 1) * sizeof(int*));
-                        *(triplets + triplets_row_index) = (int *) malloc (triplets_cols * sizeof(int));
+                        //allocate memory (3 integers) for the next triplet array that will be inserted into return matrix
+                        *(triplets + triplets_row_index) = (int*) malloc (triplets_cols * sizeof(int));
+
+                        //add an extra space for another integer in returnColumnSizes for the next iteration of the loop
+                        // int *temp_ptr = (int*) realloc (*returnColumnSizes, (triplets_row_index + 1) * sizeof(int));
+                        // *returnColumnSizes = (int*) realloc (*returnColumnSizes, (triplets_row_index + 1) * sizeof(int));
+                        // *returnColumnSizes = temp_ptr;
+                        // free(temp_ptr);
+                        
+                        // printf("%p\n", returnColumnSizes);
+                        // printf("%p\n", *returnColumnSizes);
+                        // printf("%d\n", *(*(returnColumnSizes + 0)));
+    
                     }
-                    // printf("%d %d %d\n", *(nums + j), *(nums + k), *(nums + l));
                 }
             }
         }
@@ -65,23 +85,14 @@ int** threeSum(int* nums, int numsSize, int* returnSize, int** returnColumnSizes
     return triplets;
 }
 
-// int test(int* nums, int numsSize) {
-//     printf("%d\n", numsSize);
-//     printf("%lu\n", sizeof(*nums));
-//     return 0;
-// }
-
 int main() {
-    int nums[] = {-1, 0, 1, 2, -1, -4};
-    // int **result = threeSum(nums, sizeof(nums) / sizeof(int), );
-    // printf("%ip\n", result);
-    // printf("%d\n", sizeof(nums));
+    int nums[] = {4,-2,-2,-4,-5,9,3,0,-3};
     int numsSize = sizeof(nums) / sizeof(int);
     int return_size = 0;
     int *column_sizes = (int*) malloc (1 * sizeof(int));
     
     int **result = threeSum(nums, numsSize, &return_size, &column_sizes);
-    printf("The size of the array of triplet arrays is: %d\n triplets\n", return_size);
+    printf("The size of the array of triplet arrays is: %d triplets\n", return_size);
     printf("The resulting array of triplets is: \n");
     for(int i = 0; i < return_size; i++) {
         printf("[");
@@ -97,6 +108,15 @@ int main() {
             }   
         }
     }
+    // printf("The sizes of triplet arrays in the returned matrix are: ");
+    // for(int i = 0; i < return_size; i++) {
+    //     printf("%d ", column_sizes[i]);
+    // }
+    //Since main() is the caller of threeSum, it is responsible for deallocation of all structures passed to threeSum
+    // free()
+
+
+
 
     // test code for tripletSubsetOf
     // int triplet1[] = {0,4,1};
