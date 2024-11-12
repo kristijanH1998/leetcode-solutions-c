@@ -86,7 +86,7 @@ int** threeSum(int* nums, int numsSize, int* returnSize, int** returnColumnSizes
 }
 
 int main() {
-    int nums[] = {4,-2,-2,-4,-5,9,3,0,-3};
+    int nums[] = {-1,0,1,2,-1,-4};
     int numsSize = sizeof(nums) / sizeof(int);
     int return_size = 0;
     int *column_sizes = (int*) malloc (1 * sizeof(int));
