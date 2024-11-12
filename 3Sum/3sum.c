@@ -90,7 +90,6 @@ int main() {
     int numsSize = sizeof(nums) / sizeof(int);
     int return_size = 0;
     int *column_sizes = (int*) malloc (1 * sizeof(int));
-    
     int **result = threeSum(nums, numsSize, &return_size, &column_sizes);
     printf("The size of the array of triplet arrays is: %d triplets\n", return_size);
     printf("The resulting array of triplets is: \n");
@@ -114,9 +113,6 @@ int main() {
     // }
     //Since main() is the caller of threeSum, it is responsible for deallocation of all structures passed to threeSum
     // free()
-
-
-
 
     // test code for tripletSubsetOf
     // int triplet1[] = {0,4,1};
