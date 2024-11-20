@@ -2,43 +2,21 @@
 #include <stdlib.h>
 #include <string.h>
 
-char* createCombination(int digits, int mappingIndex, char* combination, char** mappings) {
-    
+int count = 0;
+
+char* createCombination(int digits, int mappingIndex, char* combination, char** mappings, char*** arr) { 
+    char **result = *arr;  
     //digits starts at number of digits in input
     //mappingIndex starts at 0  
-    // char *current_combination = (char*) malloc (((sizeof(combination) / sizeof(char)) + 1) * sizeof(char));
-    // current_combination[]
-    
     if(digits > 0) {
-        // if(digits == (sizeof(mappings) / sizeof(char*))) {
-        //     char *combination = (char*) malloc (digits * sizeof(char));
-        // }
-
         for(int i = 0; i < strlen(mappings[mappingIndex]); i++){
-            // printf("%c", mappings[mappingIndex][i]);
             combination[strlen(combination)] = mappings[mappingIndex][i];
-
-            // combination = (char*) realloc(combination, (i + 2) * sizeof(char));
-
-            // char *combination_new = (char*) malloc ((strlen(combination) / sizeof(char)) * sizeof(char));
-            // strcpy(combination_new, combination);
-
-            createCombination(digits - 1, mappingIndex + 1, combination, mappings);
+            createCombination(digits - 1, mappingIndex + 1, combination, mappings, &result);
             combination[strlen(combination) - 1] = '\0';
         }
-        
     } else {
-        printf("%s\n", combination);
-        // combination[strlen(combination) - 1] = '\0';
-
-        // if(digits ==)
-
-        // memset(combination, 0, (strlen(combination) / sizeof(char)));
-        // strcpy(combination, "");
-        // combination = (char*) realloc(combination, sizeof(char));
-        // *combination = '\0';
-        // free(combination);
-        // char *combination = (char*) malloc (sizeof(char));
+        strcpy(*(result + count), combination);
+        count++;
         return combination;
     }
     return "";
@@ -47,25 +25,27 @@ char* createCombination(int digits, int mappingIndex, char* combination, char** 
 char** letterCombinations(char* digits, int* returnSize) {
     char *base_mappings[] = {"abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
     char **mappings = (char**) malloc (sizeof(char*));
-
+    int comb_factor = 1;
     for(int i = 0; i < (*returnSize); i++) {
         *(mappings + i) = base_mappings[(*(digits + i) - '2')];
+        comb_factor = comb_factor * strlen(*(mappings + i));
         mappings = (char**) realloc (mappings, (i + 2) * sizeof(char*));
     }
-
-
+    char **result = (char**) malloc (comb_factor * sizeof(char*));
+    for(int i = 0; i < comb_factor; i++) {
+        *(result + i) = (char*) malloc (*returnSize * sizeof(char));
+    }
     char *combination = (char*) malloc (*returnSize * sizeof(char));
-    createCombination(*returnSize, 0, combination, mappings);
-
+    createCombination(*returnSize, 0, combination, mappings, &result);
+    for(int i = 0; i < comb_factor; i++) {
+        printf("%s\n", *(result + i));
+    }
     return NULL;
 }
 
 int main() {
-    char *digits = "232";
+    char *digits = "253";
     int digits_size = strlen(digits);
     letterCombinations(digits, &digits_size);
-    // char *mappings[] = {"abc", "def"};
-    // createCombination(2, 0, NULL, mappings);
-    // printf("%d\n", sizeof(mappings) / sizeof(char*));
     return 0;
  }
