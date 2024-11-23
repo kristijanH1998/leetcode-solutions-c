@@ -49,9 +49,9 @@ char** letterCombinations(char* digits, int* returnSize) {
     //call to recursive createCombination, which generates all possible combinations for input digits
     createCombination(*returnSize, 0, combination, mappings, &result);
     //printing the output
-    // for(int i = 0; i < comb_factor; i++) {
-    //     printf("%s\n", *(result + i));
-    // }
+    for(int i = 0; i < comb_factor; i++) {
+        printf("%s\n", *(result + i));
+    }
     //freeing the memory allocated to combination string
     free(combination);
     combination = NULL;
@@ -74,7 +74,7 @@ char** letterCombinations(char* digits, int* returnSize) {
 }
 
 int main() {
-    char *digits = "253";
+    char *digits = "23";
     int digits_size = strlen(digits);
     letterCombinations(digits, &digits_size);
     return 0;
