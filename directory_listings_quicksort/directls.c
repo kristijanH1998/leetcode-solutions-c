@@ -40,7 +40,7 @@ int directls(const char *path, Directory **dir) {
     closedir(dirptr);
     return count;
 }
-
+   
 int main() {
     Directory *d1;
     // d1 = malloc(sizeof(Directory));
