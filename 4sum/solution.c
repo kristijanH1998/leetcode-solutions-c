@@ -47,7 +47,7 @@ int main(void) {
     *quadruplets = (int *)malloc(4 * sizeof(int));
     int returnSize = 0;
     int *returnSizePtr = &returnSize;
-    quadruplets = fourSum(nums, 10, 13, returnSizePtr, quadruplets);
+    quadruplets = fourSum(nums, 10, 24, returnSizePtr, quadruplets);
     for(i = 0; i < returnSize; i++) {
         printf("%d %d %d %d\n", quadruplets[i][0], quadruplets[i][1], quadruplets[i][2], quadruplets[i][3]);
         free(*(quadruplets + i));
