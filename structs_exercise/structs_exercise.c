@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include "structs_exercise.h"
 
 //typedef struct Dog Doberman;
 
@@ -12,6 +13,18 @@ typedef struct Dog {
 struct Cat {
     int age;
     char name[20];
+};
+
+struct Animal2 {
+    int age;
+};
+
+struct Fish {
+    struct Animal2 *p;
+    struct Animal {
+        char* species;
+    };
+    
 };
 
 int main() {
@@ -51,5 +64,21 @@ int main() {
     cat2->age = 2;
     strcpy(cat2->name, "Navi");
     printf("%s\n", cat2->name);
+
+    dog1.age = 10;
+    strcpy(dog1.name, "Hana");
+    printf("%d %s\n", dog1.age, dog1.name);
+
+    cat1.age = 3;
+    strcpy(cat1.name, "Zule");
+    printf("%d %s\n", cat1.age, cat1.name);
+
+    struct Fish f1;
+    struct Animal2 *a2;
+    a2 = malloc(sizeof(struct Animal2));
+    f1.p = a2;
+    f1.p->age = 11;
+    printf("%d\n", f1.p->age);
+
     return 0;
 }
