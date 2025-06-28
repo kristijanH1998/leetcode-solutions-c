@@ -23,6 +23,14 @@ int **combinationSum(int *candidates, int candidatesSize, int target, int *retur
 }
 
 int main(void) {
-
+    int candidates[] = {2, 3, 6, 7};
+    int candidatesSize = sizeof(candidates) / sizeof(int);
+    printf("%d\n", candidatesSize);
+    int target = 7;
+    int returnSize = 0;
+    int **combinations = (int **)malloc(sizeof(int *));
+    *combinations = (int *)malloc(sizeof(int));
+    int **returnColumnSizes = (int **)malloc(sizeof(int *));
+    combinationSum(candidates, candidatesSize, target, &returnSize, returnColumnSizes);
     return 0;
 }
