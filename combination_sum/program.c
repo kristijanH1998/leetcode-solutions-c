@@ -15,21 +15,56 @@ the target (here more than 7).
 */
 
 #include <stdio.h>
-#include <stdlib.h>
+#include <stdlib.h>  
+
+// note: this function will print/store all permutations of valid combinations, for example if Input: 
+// candidates = [2,3,6,7], target = 7, then [7], [2, 2, 3], [2, 3, 2], [3, 2, 2] will all be returned, but only
+// [7] and [2, 2, 3] should be returned. The solution to this is to qsort() all arrays before they are stored
+// in 'combinations', and before storing new ones they must be compared with existing arrays there to avoid
+// duplicates
+bool findCombinations(int ***combinations, int *candidates, int candidatesSize, int target, \
+    int *returnSize, int tempCombCounter, int *tempCombination) {
+    int i;
+
+    if(target <= 0) {
+        // for(i = 0; i < *(*(*combinations + returnSize) + returnColumnSizes[returnSize]); i++) {
+
+        // }
+        if(target == 0) {
+            printf("Combination found!\n");
+            for(i = 0; i < tempCombCounter; i++) {
+                printf("%d ", tempCombination[i]);
+            }
+            printf("\n");
+            return true;
+        } 
+        return false;
+    }
+    // bool combFound = false;
+    for(i = 0; i < candidatesSize; i++) {
+        tempCombination[tempCombCounter] = candidates[i];
+        findCombinations(combinations, candidates, candidatesSize, target - candidates[i], \
+            returnSize, tempCombCounter + 1, tempCombination);
+    }
+}
 
 int **combinationSum(int *candidates, int candidatesSize, int target, int *returnSize, int **returnColumnSizes) {
-
-    return NULL;
+    int **combinations = (int **)malloc(sizeof(int *));
+    *combinations = (int *)malloc(sizeof(int));
+    int tempCombination[target] = {}; 
+    findCombinations(&combinations, candidates, candidatesSize, target, returnSize, 0, tempCombination);
+    return combinations;
 }
 
 int main(void) {
     int candidates[] = {2, 3, 6, 7};
     int candidatesSize = sizeof(candidates) / sizeof(int);
-    printf("%d\n", candidatesSize);
+    // printf("%d\n", candidatesSize);
     int target = 7;
+    // const int maxCombinationLen = target;
     int returnSize = 0;
-    int **combinations = (int **)malloc(sizeof(int *));
-    *combinations = (int *)malloc(sizeof(int));
+    // int **combinations = (int **)malloc(sizeof(int *));
+    // *combinations = (int *)malloc(sizeof(int));
     int **returnColumnSizes = (int **)malloc(sizeof(int *));
     combinationSum(candidates, candidatesSize, target, &returnSize, returnColumnSizes);
     return 0;
