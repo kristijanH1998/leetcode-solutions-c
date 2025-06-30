@@ -15,44 +15,73 @@ the target (here more than 7).
 */
 
 #include <stdio.h>
-#include <stdlib.h>  
+#include <stdlib.h>
+#include <string.h>  
+
+int cmpIntegers(const void *i1, const void *i2) {
+    if(*(int *)i1 > *(int *)i2) {
+        return 1;
+    } else if(*(int *)i1 < *(int *)i2) {
+        return -1;
+    } else {
+        return 0;
+    }
+}
+
+bool findDuplicateCombs(int ***combinations, int *tempCombinationCopy, int returnSize, int tempCombCounter) {
+    for(int i = 0; i < returnSize; i++) {
+        if(memcmp(*(*combinations + i), tempCombinationCopy, tempCombCounter) == 0) {
+            return true;
+        }
+    }
+    return false;
+}
 
 // note: this function will print/store all permutations of valid combinations, for example if Input: 
 // candidates = [2,3,6,7], target = 7, then [7], [2, 2, 3], [2, 3, 2], [3, 2, 2] will all be returned, but only
 // [7] and [2, 2, 3] should be returned. The solution to this is to qsort() all arrays before they are stored
 // in 'combinations', and before storing new ones they must be compared with existing arrays there to avoid
 // duplicates
-bool findCombinations(int ***combinations, int *candidates, int candidatesSize, int target, \
-    int *returnSize, int tempCombCounter, int *tempCombination) {
+void findCombinations(int ***combinations, int *candidates, int candidatesSize, int target, \
+    int *returnSize, int tempCombCounter, int *tempCombination, int ***returnColumnSizes, int startindex) {
     int i;
-
     if(target <= 0) {
-        // for(i = 0; i < *(*(*combinations + returnSize) + returnColumnSizes[returnSize]); i++) {
-
-        // }
         if(target == 0) {
-            printf("Combination found!\n");
-            for(i = 0; i < tempCombCounter; i++) {
-                printf("%d ", tempCombination[i]);
-            }
-            printf("\n");
-            return true;
+            // printf("Combination found!\n");
+            // for(i = 0; i < tempCombCounter; i++) {
+            //     printf("%d ", tempCombination[i]);
+            // }
+            // printf("\n");
+            // int tempCombinationCopy[tempCombCounter];
+            // memcpy(tempCombinationCopy, tempCombination, sizeof(int) * tempCombCounter);
+            // qsort(tempCombinationCopy, tempCombCounter, sizeof(int), cmpIntegers);
+            // if(!findDuplicateCombs(combinations, tempCombinationCopy, (*returnSize), tempCombCounter)) {
+            *returnSize = *returnSize + 1;
+            *combinations = (int **)realloc(*combinations, ((*returnSize)) * sizeof(int *));
+            *(*combinations + (*returnSize - 1)) = (int *)malloc(tempCombCounter * sizeof(int));
+            // memcpy(*(*combinations + (*returnSize - 1)), tempCombinationCopy, sizeof(int) * tempCombCounter);
+            memcpy(*(*combinations + (*returnSize - 1)), tempCombination, sizeof(int) * tempCombCounter);
+
+            *(*returnColumnSizes + (*returnSize - 1)) = (int *)malloc(sizeof(int));
+            *(*(*returnColumnSizes + (*returnSize - 1))) = tempCombCounter;
+            *returnColumnSizes = (int **)realloc(*returnColumnSizes, ((*returnSize) * sizeof(int *)));
+            // }
         } 
-        return false;
+        return;
     }
-    // bool combFound = false;
-    for(i = 0; i < candidatesSize; i++) {
+    for(i = startindex; i < candidatesSize; i++) {
         tempCombination[tempCombCounter] = candidates[i];
         findCombinations(combinations, candidates, candidatesSize, target - candidates[i], \
-            returnSize, tempCombCounter + 1, tempCombination);
+            returnSize, tempCombCounter + 1, tempCombination, returnColumnSizes, i);
     }
 }
 
-int **combinationSum(int *candidates, int candidatesSize, int target, int *returnSize, int **returnColumnSizes) {
-    int **combinations = (int **)malloc(sizeof(int *));
-    *combinations = (int *)malloc(sizeof(int));
+int **combinationSum(int *candidates, int candidatesSize, int target, int *returnSize, int **combinations, \
+    int ***returnColumnSizes) {
+    // *combinations = (int *)malloc(sizeof(int));
     int tempCombination[target] = {}; 
-    findCombinations(&combinations, candidates, candidatesSize, target, returnSize, 0, tempCombination);
+    findCombinations(&combinations, candidates, candidatesSize, target, returnSize, 0, tempCombination, returnColumnSizes, 0);
+    // printf("%d\n", *returnSize);
     return combinations;
 }
 
@@ -66,6 +95,24 @@ int main(void) {
     // int **combinations = (int **)malloc(sizeof(int *));
     // *combinations = (int *)malloc(sizeof(int));
     int **returnColumnSizes = (int **)malloc(sizeof(int *));
-    combinationSum(candidates, candidatesSize, target, &returnSize, returnColumnSizes);
+    int **combinations = combinationSum(candidates, candidatesSize, target, &returnSize, combinations, &returnColumnSizes);
+    for(int i = 0; i < returnSize; i++) {
+        for(int j = 0; j < (*(returnColumnSizes[i])); j++) {
+            printf("%d ", combinations[i][j]);
+        }
+        printf("\n");
+        // printf("%d\n", combinations[i][0]);
+        // printf("%d\n", *(returnColumnSizes[i]));
+    }
+    for(int i = 0; i < returnSize; i++) {
+        free(combinations[i]);
+        combinations[i] = NULL;
+    }
+    free(combinations);
+    combinations = NULL;
+
+    // int a = 4;
+    // int b = 4;
+    // printf("%d\n", cmpIntegers(&a, &b));
     return 0;
 }
