@@ -3,6 +3,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <errno.h>
+#include <limits.h>
 
 // bool isMatch(char *s, char *p) {
 //     if(s == NULL || p == NULL) {
@@ -69,6 +70,30 @@
 //     return true;
 // }
 
+// #define MIN_NUM(int_arr, size, min, result) \
+//     do { \
+//         (result) = (int_arr)[0]; \
+//         for(int i = 1; i < (size); i++) { \
+//             if((int_arr)[i] < (result) && (int_arr)[i] > (min)) { \
+//                 (result) = ((int_arr)[i]); \
+//             } \
+//         } \
+//     } while(0) 
+
+//finds smallest integer in integer array 'arr', larger than minimum integer 'min'
+int findSmallest(int *arr, int size, int min) {
+    int res = INT_MAX;
+    int i;
+    bool found = false;
+    for(i = 0; i < size; i++) {
+        if((arr[i] < res) && (arr[i] > min)) {
+            found = true;
+            res = arr[i];
+        }
+    }
+    return found ? res : -1;
+}
+
 bool isMatch(char *s, char *p) {
     int sLen = strlen(s);
     int pLen = strlen(p);
@@ -107,34 +132,80 @@ bool isMatch(char *s, char *p) {
     // now time to look for each substring within the 's' string, and save its index in the 's' string
     // after this step, we must verify that these indices are in ascending order. If they are not, then 's'
     // violates the pattern in 'p'
-    int substrIndices[substringsPos] = {};
-    for(i = 0; i < substringsPos; i++) {
-        substrIndices[i] = -1;
-    }
+    int substrIndices[substringsPos][sLen] = {};
     for(i = 0; i < substringsPos; i++) {
         for(j = 0; j < sLen; j++) {
-            if(strncmp(*(substrings + i), s + j, strlen(*(substrings + i))) == 0) {
-                printf("%s found!\n", *(substrings + i));
-                substrIndices[i] = j;
-                break;
-            }
+            substrIndices[i][j] = -1;
         }
     }
-    // check that ALL substrings have been found!
+    // for(i = 0; i < substringsPos;i++) {
+    //     for(j = 0; j < sLen;j++) {
+    //         printf("%d ", substrIndices[i][j]);
+    //     }
+    //     printf("\n");
+    // }
+    int k = 0;
     for(i = 0; i < substringsPos; i++) {
-        printf("%d ", substrIndices[i]);
+        for(j = 0; j < sLen; j++) {
+        // for(j = (sLen - 1); j >= 0; j--) {
+            if(strncmp(*(substrings + i), s + j, strlen(*(substrings + i))) == 0) {
+                printf("%s found!\n", *(substrings + i));
+                while(substrIndices[i][k] != -1) {
+                    k++;
+                }
+                substrIndices[i][k] = j;
+                // break;
+            }
+        // } 
+        }
+        k = 0;
     }
-    printf("\n");
+    // check that ALL substrings have been found!
+    for(i = 0, k = 0; i < substringsPos; i++, k = 0) {
+        while(substrIndices[i][k] != -1) {
+            printf("%d ", substrIndices[i][k]);
+            k++;
+        }
+        // while(k < sLen) {
+        //     printf("%d ", substrIndices[i][k]);
+        //     k++;
+        // }
+        printf("\n");
+    }
     // printf("%d\n", substringsPos);
+
+    /* 
+    saving indices (from 's') at which substrings from 'p' are found in 's', in such a manner that for the first
+    substring we save smallest index at which it exists in 's', and then for each next substring, we try to find
+    smallest index at which it appears in 's' that is larger than previous index stored before it (index of the
+    previous substring). If once this process is over an array of integers that is generated is in ascending order,
+    that means that substrings in 's' appear in the same order they are encountered in 'p', given that in 'p'
+    they are separated by asterisks
+    */
+    int smallestMatches[substringsPos] = {};
+    smallestMatches[0] = findSmallest(substrIndices[0], substringsPos, 0);
+    for(i = 1; i < substringsPos; i++) {
+        smallestMatches[i] = findSmallest(substrIndices[i], substringsPos, smallestMatches[i - 1]);
+    }
+    for(i = 0; i < substringsPos; i++) {
+        printf("%d\n", smallestMatches[i]);
+    }
+    
+    // checking whether array of smallest matches of substrings is in ascending order, and that no integer is -1
+    // because if -1 is found, that means that that substring from 'p' was not found in 's', or that no suitable
+    // index of it could be found that would conform to smallestMatches being the ascending array of integers
     for(i = 0; i < (substringsPos - 1); i++) {
-        if((substrIndices[i] >= 0) && (substrIndices[i] < substrIndices[i + 1])) {
+        if((smallestMatches[i] >= 0) && (smallestMatches[i] < smallestMatches[i + 1])) {
             continue;
         } else {
             puts("No match!");
-            break;
+            return false;
         }
     }
 
+    // last check, to test for cases when 'p' doesn't start and/or end with asterisk, then 's' should fail if 
+    // it has any characters beyond first and last (before first and after last) substrings from 'p', which are
+    // stored in 'substrings'
     
     return true;
 }
@@ -144,8 +215,12 @@ int main(void) {
     // char p[] = "a*cc?b";
     // char s[] = "aayyyybbyccddyytt";
     // char p[] = "*aa*bb*cc*dd*tt";
-    char s[] = "aaabbccccccb";
-    char p[] = "a*cc*b";
+    // char s[] = "aaabbccccccb";
+    // char p[] = "a*cc*b";
+    // char s[] = "aabbccddccpaa";
+    // char p[] = "*cc*aa*bb";
+    char s[] = "aabbccddccpaaeee";
+    char p[] = "*bb*dd*paa";
     // char *p = NULL;
     bool match = isMatch(s, p);
     // if(match) {
@@ -154,5 +229,7 @@ int main(void) {
     //     puts("false");
     // }
     puts(match ? "true" : "false");
+    // int nums[5] = {1, 2, 23, 5, 11};
+    // printf("%d\n", findSmallest(nums, sizeof(nums) / sizeof(int), 2));
     return 0;
 }
