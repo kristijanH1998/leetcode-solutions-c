@@ -107,15 +107,33 @@ bool isMatch(char *s, char *p) {
     // now time to look for each substring within the 's' string, and save its index in the 's' string
     // after this step, we must verify that these indices are in ascending order. If they are not, then 's'
     // violates the pattern in 'p'
+    int substrIndices[substringsPos] = {};
+    for(i = 0; i < substringsPos; i++) {
+        substrIndices[i] = -1;
+    }
     for(i = 0; i < substringsPos; i++) {
         for(j = 0; j < sLen; j++) {
             if(strncmp(*(substrings + i), s + j, strlen(*(substrings + i))) == 0) {
                 printf("%s found!\n", *(substrings + i));
+                substrIndices[i] = j;
                 break;
             }
         }
     }
-
+    // check that ALL substrings have been found!
+    for(i = 0; i < substringsPos; i++) {
+        printf("%d ", substrIndices[i]);
+    }
+    printf("\n");
+    // printf("%d\n", substringsPos);
+    for(i = 0; i < (substringsPos - 1); i++) {
+        if((substrIndices[i] >= 0) && (substrIndices[i] < substrIndices[i + 1])) {
+            continue;
+        } else {
+            puts("No match!");
+            break;
+        }
+    }
 
     
     return true;
@@ -124,8 +142,10 @@ bool isMatch(char *s, char *p) {
 int main(void) {
     // char s[] = "aaabbccccccb";
     // char p[] = "a*cc?b";
-    char s[] = "haabbcch";
-    char p[] = "*aa*b?*cc*h*";
+    // char s[] = "aayyyybbyccddyytt";
+    // char p[] = "*aa*bb*cc*dd*tt";
+    char s[] = "aaabbccccccb";
+    char p[] = "a*cc*b";
     // char *p = NULL;
     bool match = isMatch(s, p);
     // if(match) {
