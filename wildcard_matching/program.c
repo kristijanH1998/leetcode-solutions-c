@@ -99,6 +99,7 @@ bool isMatch(char *s, char *p) {
     int pLen = strlen(p);
     int i;
     int stars = 0;
+    // find number of asterisks in 'p'
     for(i = 0; i < pLen; i++) {
         if(p[i] == '*') {
             stars++;
@@ -132,6 +133,9 @@ bool isMatch(char *s, char *p) {
     // now time to look for each substring within the 's' string, and save its index in the 's' string
     // after this step, we must verify that these indices are in ascending order. If they are not, then 's'
     // violates the pattern in 'p'
+
+    // definition of substrIndices, a matrix that will store all indices at which each substring from 'p' is 
+    // located within 's'. Note: substrings from 'p' are separated by asterisks
     int substrIndices[substringsPos][sLen] = {};
     for(i = 0; i < substringsPos; i++) {
         for(j = 0; j < sLen; j++) {
@@ -144,6 +148,8 @@ bool isMatch(char *s, char *p) {
     //     }
     //     printf("\n");
     // }
+
+    // store ALL indices from 's' at which substrings from 'p' (strings separated by asterisks) are found
     int k = 0;
     for(i = 0; i < substringsPos; i++) {
         for(j = 0; j < sLen; j++) {
@@ -166,10 +172,10 @@ bool isMatch(char *s, char *p) {
             printf("%d ", substrIndices[i][k]);
             k++;
         }
-        // while(k < sLen) {
-        //     printf("%d ", substrIndices[i][k]);
-        //     k++;
-        // }
+        while(k < sLen) {
+            printf("%d ", substrIndices[i][k]);
+            k++;
+        }
         printf("\n");
     }
     // printf("%d\n", substringsPos);
@@ -183,7 +189,7 @@ bool isMatch(char *s, char *p) {
     they are separated by asterisks
     */
     int smallestMatches[substringsPos] = {};
-    smallestMatches[0] = findSmallest(substrIndices[0], substringsPos, 0);
+    smallestMatches[0] = findSmallest(substrIndices[0], substringsPos, -1);
     for(i = 1; i < substringsPos; i++) {
         smallestMatches[i] = findSmallest(substrIndices[i], substringsPos, smallestMatches[i - 1]);
     }
@@ -207,6 +213,38 @@ bool isMatch(char *s, char *p) {
     // it has any characters beyond first and last (before first and after last) substrings from 'p', which are
     // stored in 'substrings'
     
+    // find lowest and highest indices in substrIndices[][], which correspond to earliest and latest locations
+    // in 's' where substrings from 'p' are found
+    int minIndex = INT_MAX;
+    int maxIndex = INT_MIN;
+    for(i = 0; i < substringsPos; i++) {
+        for(j = 0; (j < sLen) && (substrIndices[i][j] >= 0); j++) {
+            if(substrIndices[i][j] < minIndex) {
+                minIndex = substrIndices[i][j];
+            }
+            if(substrIndices[i][j] > maxIndex) {
+                maxIndex = substrIndices[i][j];
+            }
+        }
+    }
+    printf("Min index with substring: %d\nMax index with substring: %d\n", minIndex, maxIndex);
+    
+    // if 'p' doesn't start with an asterisk, but the first substring from 'p' is found at index in 's' higher
+    // than 0, that means that some characters exist in 's' before the first substring from 'p', which in
+    // absence of asterisk is a violation of the pattern, so return false
+    if((p[0] != '*') && (minIndex > 0)) {
+        return false;
+    }
+    
+    // if 'p' doesn't end with an asterisk, but the portion of 's' at an index of last found substring (from 'p') 
+    // doesn't equal that last found substring (also stored in 'substrings'), then that means there exist
+    // characters in 's' beyond the last substring from 'p', and due to no asterisk at end of 'p', that's a 
+    // violation of the pattern
+    if((p[pLen - 1] != '*') && \
+    (strncmp(s + maxIndex, *(substrings + (substringsPos - 1)), sLen - maxIndex) != 0)) {
+        return false;
+    }
+
     return true;
 }
 
@@ -219,8 +257,10 @@ int main(void) {
     // char p[] = "a*cc*b";
     // char s[] = "aabbccddccpaa";
     // char p[] = "*cc*aa*bb";
-    char s[] = "aabbccddccpaaeee";
-    char p[] = "*bb*dd*paa";
+    // char s[] = "bbccddccpaaeeepplllq";
+    // char p[] = "bb*dd*paa*ee*";
+    char s[] = "abbe";
+    char p[] = "*abb";
     // char *p = NULL;
     bool match = isMatch(s, p);
     // if(match) {
@@ -228,7 +268,7 @@ int main(void) {
     // } else {
     //     puts("false");
     // }
-    puts(match ? "true" : "false");
+    puts(match ? "Match!" : "No match!");
     // int nums[5] = {1, 2, 23, 5, 11};
     // printf("%d\n", findSmallest(nums, sizeof(nums) / sizeof(int), 2));
     return 0;
