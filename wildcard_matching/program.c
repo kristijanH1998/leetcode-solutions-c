@@ -168,10 +168,10 @@ bool isMatch(char *s, char *p) {
     }
     // check that ALL substrings have been found!
     for(i = 0, k = 0; i < substringsPos; i++, k = 0) {
-        while(substrIndices[i][k] != -1) {
-            printf("%d ", substrIndices[i][k]);
-            k++;
-        }
+        // while(substrIndices[i][k] != -1) {
+        //     printf("%d ", substrIndices[i][k]);
+        //     k++;
+        // }
         while(k < sLen) {
             printf("%d ", substrIndices[i][k]);
             k++;
@@ -253,14 +253,14 @@ int main(void) {
     // char p[] = "a*cc?b";
     // char s[] = "aayyyybbyccddyytt";
     // char p[] = "*aa*bb*cc*dd*tt";
-    // char s[] = "aaabbccccccb";
-    // char p[] = "a*cc*b";
+    char s[] = "aaabbccccccb";
+    char p[] = "a*cc*b";
     // char s[] = "aabbccddccpaa";
     // char p[] = "*cc*aa*bb";
     // char s[] = "bbccddccpaaeeepplllq";
     // char p[] = "bb*dd*paa*ee*";
-    char s[] = "abbe";
-    char p[] = "*abb";
+    // char s[] = "b";
+    // char p[] = "*b";
     // char *p = NULL;
     bool match = isMatch(s, p);
     // if(match) {
