@@ -229,10 +229,9 @@ bool isMatch(char *s, char *p) {
     */
     int smallestMatches[substringsPos] = {};
     smallestMatches[0] = findSmallest(substrIndices[0], substringsPos, -1);
-    int min = 0;
     for(i = 1; i < substringsPos; i++) {
         for(j = 0; j < sLen; j++) {
-            if((smallestMatches[i - 1] + strlen(substrings[i - 1])) >= (substrIndices[i][j])) {
+            if((smallestMatches[i - 1] + strlen(substrings[i - 1])) > (substrIndices[i][j])) {
                 continue;
             } else {
                 break;
@@ -321,8 +320,12 @@ int main(void) {
     // char *p = NULL;
     // char s[] = "eqertqwwwo";
     // char p[] = "e?ertq*o?";
-    char s[] = "mississippi";
-    char p[] = "m??*ss*?i*pi";
+    // char s[] = "mississippi";
+    // char p[] = "m??*ss*?i*pi";
+    // char s[] = "caab";
+    // char p[] = "c*a*b";
+    char s[] = "b";
+    char p[] = "?*?";
     bool match = isMatch(s, p);
     // if(match) {
     //     puts("true");
