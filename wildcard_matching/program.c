@@ -94,6 +94,19 @@ int findSmallest(int *arr, int size, int min) {
     return found ? res : -1;
 }
 
+// compare string 's' to pattern string 'p', returning 0 if 's' matches pattern in 'p'
+// takes care of question marks in 'p'
+int compare(char *s, char *p, int len) {
+    for(int i = 0; i < len; i++) {
+        if(((s[i] != '\0') && (p[i] != '\0')) && ((s[i] == p[i]) || (p[i] == '?')))  {
+            continue;
+        } else {
+            return -1;
+        }
+    }
+    return 0;
+}
+
 bool isMatch(char *s, char *p) {
     int sLen = strlen(s);
     int pLen = strlen(p);
@@ -180,7 +193,7 @@ bool isMatch(char *s, char *p) {
     for(i = 0; i < substringsPos; i++) {
         for(j = 0; j < sLen; j++) {
         // for(j = (sLen - 1); j >= 0; j--) {
-            if(strncmp(*(substrings + i), s + j, strlen(*(substrings + i))) == 0) {
+            if(compare(s + j, *(substrings + i), strlen(*(substrings + i))) == 0) {
                 printf("%s found!\n", *(substrings + i));
                 while(substrIndices[i][k] != -1) {
                     k++;
@@ -274,7 +287,7 @@ bool isMatch(char *s, char *p) {
     // characters in 's' beyond the last substring from 'p', and due to no asterisk at end of 'p', that's a 
     // violation of the pattern
     if((p[pLen - 1] != '*') && (maxIndex >= 0) && \
-    (strncmp(s + maxIndex, *(substrings + (substringsPos - 1)), sLen - maxIndex) != 0)) {
+    (compare(s + maxIndex, *(substrings + (substringsPos - 1)), sLen - maxIndex) != 0)) {
         return false;
     }
     return true;
@@ -283,8 +296,8 @@ bool isMatch(char *s, char *p) {
 int main(void) {
     // char s[] = "aaabbccccccb";
     // char p[] = "a*cc?b";
-    char s[] = "aayyyybbyccddyytt";
-    char p[] = "*aa*bb*cc*dd*tt";
+    // char s[] = "aayyyybbyccddyytt";
+    // char p[] = "*aa*bb*cc*dd*tt";
     // char s[] = "aaabbccccccb";
     // char p[] = "a*cc*b";
     // char s[] = "aabbccddccpaa";
@@ -295,9 +308,11 @@ int main(void) {
     // char p[] = "b*";
     // char s[] = "ryyu";
     // char p[] = "ryyu";
-    // char s[] = "rqq";
-    // char p[] = "*q";
+    char s[] = "rqqeww";
+    char p[] = "*q?w";
     // char *p = NULL;
+    // char s[] = "eqertqwwwo";
+    // char p[] = "e?ertq*o?";
     bool match = isMatch(s, p);
     // if(match) {
     //     puts("true");
