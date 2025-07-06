@@ -229,8 +229,16 @@ bool isMatch(char *s, char *p) {
     */
     int smallestMatches[substringsPos] = {};
     smallestMatches[0] = findSmallest(substrIndices[0], substringsPos, -1);
+    int min = 0;
     for(i = 1; i < substringsPos; i++) {
-        smallestMatches[i] = findSmallest(substrIndices[i], substringsPos, smallestMatches[i - 1]);
+        for(j = 0; j < sLen; j++) {
+            if((smallestMatches[i - 1] + strlen(substrings[i - 1])) >= (substrIndices[i][j])) {
+                continue;
+            } else {
+                break;
+            }
+        }
+        smallestMatches[i] = findSmallest(substrIndices[i] + j, substringsPos, smallestMatches[i - 1]);
     }
     for(i = 0; i < substringsPos; i++) {
         printf("%d\n", smallestMatches[i]);
@@ -308,11 +316,13 @@ int main(void) {
     // char p[] = "b*";
     // char s[] = "ryyu";
     // char p[] = "ryyu";
-    char s[] = "rqqeww";
-    char p[] = "*q?w";
+    // char s[] = "rqqeww";
+    // char p[] = "*q?w";
     // char *p = NULL;
     // char s[] = "eqertqwwwo";
     // char p[] = "e?ertq*o?";
+    char s[] = "mississippi";
+    char p[] = "m??*ss*?i*pi";
     bool match = isMatch(s, p);
     // if(match) {
     //     puts("true");
