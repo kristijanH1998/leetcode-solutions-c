@@ -105,6 +105,24 @@ bool isMatch(char *s, char *p) {
             stars++;
         }
     }
+    // if no asterisks in 'p', then just check for regular letters and question marks
+    if(stars == 0) {
+        if(sLen != pLen) {
+            return false;
+        }
+        for(i = 0; i < pLen; i++) {
+            if(p[i] == '?') {
+                continue;
+            } else {
+                if(s[i] == p[i]) {
+                    continue;
+                } else {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
     // printf("%d\n", stars);
     char **substrings = (char **)malloc((stars + 1) * sizeof(char *));
     int substringsPos = 0;
@@ -112,12 +130,13 @@ bool isMatch(char *s, char *p) {
     // if there are asterisks(stars) in pattern string, extract all substrings separated by stars and store 
     // them in 'substrings'
     if(stars > 0) {
+        // i = (p[0] == '*') ? 1 : 0;
         for(i = 0; i < pLen; i++){
             j = i;
-            while(p[i] != '*') {
+            while((p[i] != '*') && (i < pLen)) {
                 i++;
             }
-            if((p[i] == '*') && (i > j)) {
+            if(((p[i] == '*') || (p[i] == '\0') ) && (i > j)) {
                 *(substrings + substringsPos) = (char *)malloc((i - j + 1) * sizeof(char));
                 strncpy(*(substrings + substringsPos), p + j, (i - j) * sizeof(char));
                 *(*(substrings + substringsPos) + (i - j)) = '\0';
@@ -130,6 +149,13 @@ bool isMatch(char *s, char *p) {
     for(i = 0; i < substringsPos; i++) {
         puts(*(substrings + i));
     }
+
+    // if no substrings extracted from 'p' (meaning 'p' only contains asterisks or nothing at all), return true
+    // because asterisk(s) allow all values for 's', even empty string
+    if(substringsPos == 0) {
+        return true;
+    }
+
     // now time to look for each substring within the 's' string, and save its index in the 's' string
     // after this step, we must verify that these indices are in ascending order. If they are not, then 's'
     // violates the pattern in 'p'
@@ -204,7 +230,7 @@ bool isMatch(char *s, char *p) {
         if((smallestMatches[i] >= 0) && (smallestMatches[i] < smallestMatches[i + 1])) {
             continue;
         } else {
-            puts("No match!");
+            // puts("No match!");
             return false;
         }
     }
@@ -227,8 +253,15 @@ bool isMatch(char *s, char *p) {
             }
         }
     }
-    printf("Min index with substring: %d\nMax index with substring: %d\n", minIndex, maxIndex);
+    printf("Min index with substring: %d\nMax index with substring: %d\n", 
+        minIndex != INT_MAX ? minIndex : -1, maxIndex != INT_MIN ? maxIndex : -1);
     
+    // if minIndex and maxIndex haven't been updated in last for loop, and all indices in substrIndices are -1,
+    // then no matching indices were found, so return false
+    if(minIndex == INT_MAX || maxIndex == INT_MIN) {
+        return false;
+    }
+
     // if 'p' doesn't start with an asterisk, but the first substring from 'p' is found at index in 's' higher
     // than 0, that means that some characters exist in 's' before the first substring from 'p', which in
     // absence of asterisk is a violation of the pattern, so return false
@@ -240,27 +273,30 @@ bool isMatch(char *s, char *p) {
     // doesn't equal that last found substring (also stored in 'substrings'), then that means there exist
     // characters in 's' beyond the last substring from 'p', and due to no asterisk at end of 'p', that's a 
     // violation of the pattern
-    if((p[pLen - 1] != '*') && \
+    if((p[pLen - 1] != '*') && (maxIndex >= 0) && \
     (strncmp(s + maxIndex, *(substrings + (substringsPos - 1)), sLen - maxIndex) != 0)) {
         return false;
     }
-
     return true;
 }
 
 int main(void) {
     // char s[] = "aaabbccccccb";
     // char p[] = "a*cc?b";
-    // char s[] = "aayyyybbyccddyytt";
-    // char p[] = "*aa*bb*cc*dd*tt";
-    char s[] = "aaabbccccccb";
-    char p[] = "a*cc*b";
+    char s[] = "aayyyybbyccddyytt";
+    char p[] = "*aa*bb*cc*dd*tt";
+    // char s[] = "aaabbccccccb";
+    // char p[] = "a*cc*b";
     // char s[] = "aabbccddccpaa";
     // char p[] = "*cc*aa*bb";
     // char s[] = "bbccddccpaaeeepplllq";
-    // char p[] = "bb*dd*paa*ee*";
+    // char p[] = "bb*dd*paa*ee";
     // char s[] = "b";
-    // char p[] = "*b";
+    // char p[] = "b*";
+    // char s[] = "ryyu";
+    // char p[] = "ryyu";
+    // char s[] = "rqq";
+    // char p[] = "*q";
     // char *p = NULL;
     bool match = isMatch(s, p);
     // if(match) {
