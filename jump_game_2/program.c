@@ -3,9 +3,12 @@
 #include <limits.h>
 #include <math.h>
 
-// static int minJumps = INT_MAX;
+static int best = INT_MAX;
 
 int find_jumps(int *nums, int numsSize, int jumps) {
+    if(jumps > best) {
+        return best;
+    }
     if(nums == NULL) {
         return -1;
     }
@@ -15,9 +18,13 @@ int find_jumps(int *nums, int numsSize, int jumps) {
     int minJumps = INT_MAX;
     int temp;
     for(int i = 1; i <= nums[0]; i++) {
-        temp = find_jumps(nums + i, numsSize - i, jumps + 1);
-        if(temp < minJumps) {
-            minJumps = temp;
+        if(i < numsSize) {
+            temp = find_jumps(nums + i, numsSize - i, jumps + 1);
+            if(temp < minJumps) {
+                best = minJumps = temp;
+            }
+        } else {
+            continue;
         }
     }
     return minJumps;
@@ -35,16 +42,20 @@ int jump(int *nums, int numsSize) {
     int temp;
     int minJumps = INT_MAX;
     for(i = 1; i <= nums[0]; i++) {
-        temp = find_jumps(nums + i, numsSize - i, jumps + 1);
-        if(temp < minJumps) {
-            minJumps = temp;
+        if(i < numsSize) {
+            temp = find_jumps(nums + i, numsSize - i, jumps + 1);
+            if(temp < minJumps) {
+                minJumps = temp;
+            }
+        } else {
+            continue;
         }
     }
     return minJumps;
 }
 
 int main(void) {
-    int nums[5] = {1, 1, 2, 1, 3};
+    int nums[] = {1, 1, 1, 1};
     int numsSize = sizeof(nums) / sizeof(int);
     printf("%d\n", jump(nums, numsSize));
     return 0;
