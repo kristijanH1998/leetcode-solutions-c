@@ -9,11 +9,14 @@ char *count_and_say(int n) {
         return "";
     }
     if(n == 1) {
-        return "1";
+        char *rlrs = (char *)malloc(2 * sizeof(char));
+        *(rlrs + 0) = '1';
+        *(rlrs + 1) = '\0';
+        return rlrs;
     }
     char *rleStr = count_and_say(n - 1);
     size_t rleLen = strlen(rleStr);
-    char *rleRes = (char *)malloc(2 * rleLen);
+    char *rleRes = (char *)malloc(2 * rleLen + 1);
     int count = 1;
     int i, j;
     for(i = 0, j = 0; i < rleLen; i++) {
@@ -25,6 +28,7 @@ char *count_and_say(int n) {
             count = 1;
         }
     }
+    free(rleStr);
     rleRes[j] = '\0';
     return rleRes;
 }
