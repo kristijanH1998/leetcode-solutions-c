@@ -4,18 +4,19 @@
 #define RIGHT "R"
 #define DOWN "D"
 
-void generate_paths(int m, int n, char *move, int *count) {
+void generate_paths(int m, int n, int *count) {
     if(m == 0 && n == 0) {
         (*count)++;
         // printf("\n");
         return;
-    }
-    // printf("%s ", move);
+    }  
     if(m > 0) {
-        generate_paths(m - 1, n, DOWN, count);
+        // printf("D ");
+        generate_paths(m - 1, n, count);
     }
     if(n > 0) {
-        generate_paths(m, n - 1, RIGHT, count);
+        // printf("R ");
+        generate_paths(m, n - 1, count);
     }
     return;
 } 
@@ -27,8 +28,9 @@ int unique_paths(int m, int n) {
         return 1;
     }
     int count = 0;
-    generate_paths(m - 2, n - 1, DOWN, &count);
-    generate_paths(m - 1, n - 2, RIGHT, &count);
+    // generate_paths(m - 2, n - 1, DOWN, &count);
+    // generate_paths(m - 1, n - 2, RIGHT, &count);
+    generate_paths(m - 1, n - 1, &count);
     // printf("%d\n", count);
     return count;
 }
@@ -38,6 +40,6 @@ int main(void) {
     // int (*fptr)(int, int);
     // fptr = &uniquePaths;
     // (*fptr)(3, 4);
-    printf("%d\n", unique_paths(51, 9));
+    printf("%d\n", unique_paths(3, 7));
     return 0;
 }
