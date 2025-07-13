@@ -40,6 +40,6 @@ int main(void) {
     // int (*fptr)(int, int);
     // fptr = &uniquePaths;
     // (*fptr)(3, 4);
-    printf("%d\n", unique_paths(3, 7));
+    printf("%d\n", unique_paths(8, 7));
     return 0;
 }
