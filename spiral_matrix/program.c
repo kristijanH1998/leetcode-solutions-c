@@ -14,7 +14,8 @@ int *spiralOrder(int **matrix, int matrixSize, int *matrixColSize, int *returnSi
     int rows = matrixSize;
     int cols = *matrixColSize;
     int matLen = rows * cols;
-    int *spiral = (int*)malloc((matLen + 1) * sizeof(int));
+    // printf("%d\n", matLen);
+    int *spiral = (int*)malloc(matLen * sizeof(int));
     if(rows == 1) {
         memcpy(spiral, matrix[0], matLen);
     }
@@ -33,33 +34,34 @@ int *spiralOrder(int **matrix, int matrixSize, int *matrixColSize, int *returnSi
         }
         (pos.y)--;
         (pos.x)++;
-        while(pos.x < (rows - limitUD)) {
+        while(pos.x < (rows - limitUD) && (copied < matLen)) {
             *(spiral + (copied++)) = *(*(matrix + pos.x) + pos.y);
             (pos.x)++;
         }
         (pos.x)--;
         (pos.y)--;
         limitUD++;
-        while(pos.y >= limitRL) {
+        while(pos.y >= limitRL && (copied < matLen)) {
             *(spiral + (copied++)) = *(*(matrix + pos.x) + pos.y);
             (pos.y)--;
         }
         (pos.y)++;
         (pos.x)--;
         limitRL++;
-        while(pos.x >= limitUD) {
+        while(pos.x >= limitUD && (copied < matLen)) {
             *(spiral + (copied++)) = *(*(matrix + pos.x) + pos.y);
             (pos.x)--;
         }
         (pos.x)++;
         (pos.y)++;
     }
-    *returnSize = (rows == cols) ? copied : (copied - 1);
+    *returnSize = copied; // (rows == cols) ? copied : (copied - 1);
+    // printf("%d %d\n", *returnSize, copied);
     return spiral;
 }
 
 int main(void) {
-    int rows = 2;
+    int rows = 10;
     int cols = 2;
     int **matrix = (int**)malloc(rows * sizeof(int *));
     int i;
@@ -80,7 +82,7 @@ int main(void) {
     }
     int returnSize = 0;
     int *spiral = spiralOrder(matrix, rows, &cols, &returnSize);
-    printf("%d\n", returnSize);
+    // printf("%d\n", returnSize);
     for(i = 0; i < returnSize; i++) {
         printf("%d ", *(spiral + i));
     }
