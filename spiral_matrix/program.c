@@ -61,8 +61,8 @@ int *spiralOrder(int **matrix, int matrixSize, int *matrixColSize, int *returnSi
 }
 
 int main(void) {
-    int rows = 10;
-    int cols = 2;
+    int rows = 5;
+    int cols = 5;
     int **matrix = (int**)malloc(rows * sizeof(int *));
     int i;
     for(i = 0; i < rows; i++) {
