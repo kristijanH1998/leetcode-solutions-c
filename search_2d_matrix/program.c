@@ -9,9 +9,12 @@ static int cmpNums(const void *num1, const void *num2) {
 }
 
 bool searchMatrix(int **matrix, int matrixSize, int *matrixColSize, int target) {
+    if((matrix == NULL) || (matrixSize <= 0) || (*matrixColSize == 0)) {
+        return false;
+    }
     int rows = matrixSize;
     int cols = *matrixColSize;
-    int i, j;
+    // int i, j;
     // for(i = 0; i < rows; i++) {
     //     for(j = 0; j < cols; j++) {
     //         printf("%d ", matrix[i][j]);
@@ -68,6 +71,7 @@ bool searchMatrix(int **matrix, int matrixSize, int *matrixColSize, int target) 
 
 int main(void) {
     int matrixCpy[5][4] = {{1,3,5,7},{10,11,16,20},{23,30,34,60},{100,110,120,130},{200,300,400,500}};
+    // int matrixCpy[1][1] = {{1}};
     int rows = 5;
     int cols = 4;
     int **matrix = (int**)malloc(rows * sizeof(int*));
@@ -80,6 +84,6 @@ int main(void) {
     int matrixSize = ARRAY_SIZE(matrixCpy);
     int matrixColSize = ARRAY_SIZE(matrixCpy[0]);
     // printf("%d %d %d %d\n", matrixSize, matrixColSize, ARRAY_SIZE(matrixCpy), ARRAY_SIZE(matrixCpy[0]));
-    printf("%s\n", searchMatrix(matrix, matrixSize, &matrixColSize, 40) ? "true" : "false");
+    printf("%s\n", searchMatrix(matrix, matrixSize, &matrixColSize, 3) ? "true" : "false");
     return 0;
 }
