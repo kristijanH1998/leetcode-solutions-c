@@ -5,6 +5,7 @@
 #define DOTS 3
 #define MAXINTLEN 3
 #define INTS 4
+#define MAXDIGITS 20
 
 char **restoreIpAddresses(char *s, int *returnSize) {
     if(s == NULL) {
@@ -16,7 +17,7 @@ char **restoreIpAddresses(char *s, int *returnSize) {
     int dot3 = 5;
     // int dot4 = 7;
     int sLen = strlen(s);
-    if(sLen < INTS) {
+    if(sLen < INTS || sLen > MAXDIGITS) {
         return NULL;
     }
     int tempLen = sLen + DOTS + 1;
@@ -94,7 +95,8 @@ int main(void) {
     // char s[] = "25525511135";
     // char *s = "0000";
     // char *s = "121511";
-    char s[] = "101023";
+    // char s[] = "101023";
+    char *s = "0";
     int returnSize = 0;
     char **addresses = restoreIpAddresses(s, &returnSize);
     printf("Valid addresses: %d\n", returnSize); 
