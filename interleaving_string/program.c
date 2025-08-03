@@ -167,6 +167,7 @@ Both approaches ensure that all characters are used and their relative order is 
 
 */
 
+// Iterative DP approach
 bool isInterleave(char *s1, char *s2, char *s3) {
     if(s1 == NULL || s2 == NULL || s3 == NULL) {
         return false;
@@ -216,22 +217,96 @@ bool isInterleave(char *s1, char *s2, char *s3) {
     return dp[s1Len][s2Len];
 }
 
+
+// recursive DP approach:
+// bool testInterleave(char *s1, char *s2, char *s3, int i, int j, bool inter) {
+//     bool ans = inter;
+//     if(i == (strlen(s1)) && (j == strlen(s2))) {
+//         printf("Found");
+//         ans = ans || true;
+//     }
+//     if((i < strlen(s1)) && s1[i] == s3[i + j]) {
+//         ans = inter || testInterleave(s1, s2, s3, i + 1, j, inter);
+//     } else if((j < strlen(s2)) && s2[j] == s3[i + j]) {
+//         ans = inter || testInterleave(s1, s2, s3, i, j + 1, inter);
+//     }
+//     return ans;
+// }
+
+// bool isInterleave2(char *s1, char *s2, char *s3) {
+//     if(s1 == NULL || s2 == NULL || s3 == NULL) {
+//         return false;
+//     }
+//     int s1Len = strlen(s1);
+//     int s2Len = strlen(s2);
+//     int s3Len = strlen(s3);
+//     if(s3Len != (s1Len + s2Len)) {
+//         return false;
+//     }
+//     int i, j;
+//     i = j = 0;
+//     return testInterleave(s1, s2, s3, i, j, false);
+// }
+
+bool dfs(char *s1, char *s2, char *s3, int i, int j, int **memo) {
+    if (memo[i][j] != -1) return memo[i][j];
+    
+    if (i == strlen(s1) && j == strlen(s2)) {
+        return memo[i][j] = true;
+    }
+    
+    if (i < strlen(s1) && s1[i] == s3[i + j]) {
+        if (dfs(s1, s2, s3, i + 1, j, memo)) {
+            return memo[i][j] = true;
+        }
+    }
+    if (j < strlen(s2) && s2[j] == s3[i + j]) {
+        if (dfs(s1, s2, s3, i, j + 1, memo)) {
+            return memo[i][j] = true;
+        }
+    }
+    
+    return memo[i][j] = false;
+}
+
+bool isInterleave2(char *s1, char *s2, char *s3) {
+    if (!s1 || !s2 || !s3) return false;
+    int len1 = strlen(s1), len2 = strlen(s2), len3 = strlen(s3);
+    if (len1 + len2 != len3) return false;
+
+    int **memo = (int **)malloc((len1 + 1) * sizeof(int *));
+    for (int i = 0; i <= len1; i++) {
+        memo[i] = (int *)malloc((len2 + 1) * sizeof(int));
+        for (int j = 0; j <= len2; j++) {
+            memo[i][j] = -1;
+        }
+    }
+
+    bool result = dfs(s1, s2, s3, 0, 0, memo);
+
+    for (int i = 0; i <= len1; i++) free(memo[i]);
+    free(memo);
+
+    return result;
+}
+
 int main(void) {
-    // char *s1 = "aabcc";
-    // char *s2 = "dbbca";
-    // char *s3 = "aadbbcbcac";
+    char *s1 = "aabcc";
+    char *s2 = "dbbca";
+    char *s3 = "aadbbcbcac";
     // char *s1 = "aabcc";
     // char *s2 = "dbbca";
     // char *s3 = "aadbbbaccc";
     // char *s1 = "";
     // char *s2 = "";
     // char *s3 = "";
-    char *s1 = "aa";
-    char *s2 = "ab";
-    char *s3 = "aaba";
+    // char *s1 = "aa";
+    // char *s2 = "ab";
+    // char *s3 = "aaba";
     // char *s1 = "aabcc";
     // char *s2 = "dbbca";
     // char *s3 = "aadbcbbcac";
     printf(isInterleave(s1, s2, s3) ? "true\n" :  "false\n");
+    printf(isInterleave2(s1, s2, s3) ? "true\n" : "false\n");
     return 0;
 }
