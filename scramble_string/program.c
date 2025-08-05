@@ -47,6 +47,8 @@ void scramble(int swapInd, char *s1, char *s2, int start, int end, bool *result)
     for(i = 0; i < swapInd; i++) {
         scramble(i, s1, s2, start, swapInd - 1, result);
         scramble(i, s1, s2, swapInd, end, result);
+        scramble(i, sCpy, s2, start, swapInd - 1, result);
+        scramble(i, sCpy, s2, swapInd, end, result);
     }
     return;
 }
