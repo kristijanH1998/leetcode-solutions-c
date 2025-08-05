@@ -2,33 +2,37 @@
 #include <stdlib.h>
 #include <string.h>
 
-void scramble(int swapInd, char *s, int start, int end, bool swap, char **scrambles, int *scramblesCnt) {
-    int sLen = strlen(s);
-    char sCpy[sLen];
-    strcpy(sCpy, s);
-    if(end - start <= 1) {
-        (*scramblesCnt)++;
-        strcpy(*(scrambles + ((*scramblesCnt) - 1)), s);
-        scrambles = realloc(scrambles, ((*scramblesCnt) + 1) * sizeof(char *));
-        *(scrambles + (*scramblesCnt)) = (char*)malloc(sLen * sizeof(char));
-        // return s;
+void scramble(int swapInd, char *s1, char *s2, int start, int end, bool swap, char **scrambles, int *scramblesCnt) {
+    if(!(swapInd > start && swapInd <= end)) {
+        return;
     }
-    char *leftHalf = strndup(s + start, swapInd - start);
-    char *rightHalf = strndup(s + start + swapInd, end - swapInd);
+    int sLen = strlen(s1);
+    char sCpy[sLen];
+    strcpy(sCpy, s1);
+    if(end - start <= 1) {
+        // (*scramblesCnt)++;
+        // strcpy(*(scrambles + ((*scramblesCnt) - 1)), s1);
+        // scrambles = realloc(scrambles, ((*scramblesCnt) + 1) * sizeof(char *));
+        // *(scrambles + (*scramblesCnt)) = (char*)malloc(sLen * sizeof(char));
+        // return s1;
+
+    }
+    char *leftHalf = strndup(s1 + start, swapInd - start);
+    char *rightHalf = strndup(s1 + swapInd, end - swapInd + 1);
     printf("%s\n", leftHalf);
     printf("%s\n", rightHalf);
-    int i;
+    int i, j;
     int rightHalfLen = strlen(rightHalf);
     for(i = 0; i < rightHalfLen; i++) {
         sCpy[start + i] = rightHalf[i];
     }
     // printf("%s\n", sCpy);
     int leftHalfLen = strlen(leftHalf);
-    for(i = 0; i < leftHalfLen; i++) {
-        sCpy[end - swapInd + i] = leftHalf[i];
+    for(j = 0; j < leftHalfLen; j++, i++) {
+        sCpy[start + i] = leftHalf[j];
     }
     printf("%s\n", sCpy);
-    printf("%d %d\n", leftHalfLen, rightHalfLen);
+    // printf("%d %d\n", leftHalfLen, rightHalfLen);
 
     // return sCpy;
 }
@@ -48,8 +52,16 @@ bool isScramble(char *s1, char *s2) {
     // for(int i = 1; i < s1Len; i++) {
     //     scramble(i, s1, scrambles, &scramblesCnt);
     // }
-    scramble(4, s1, 0, 5, true, scrambles, &scramblesCnt);
-    
+    // scramble(4, s1, 0, 5, true, scrambles, &scramblesCnt);
+    // scramble(4, s1, 1, 5, true, scrambles, &scramblesCnt);
+    // scramble(2, s1, 0, 5, true, scrambles, &scramblesCnt);
+    int i;
+    for(i = 0; i < s1Len; i++) {
+        scramble(i, s1, s2, 0, 3, true, scrambles, &scramblesCnt);
+    }
+
+
+
     return false;
 }
 
