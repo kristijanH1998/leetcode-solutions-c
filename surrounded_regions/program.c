@@ -36,6 +36,20 @@ void printMatrix(char **board, int height, int length) {
     }
 }
 
+void surround(char **board, int height, int length) {
+    int i, j;
+    for(i = 0; i < height; i++) {
+        for(j = 0; j < length; j++) {
+            if(board[i][j] == 'O') {
+                board[i][j] = 'X';
+            }
+            if(board[i][j] == 'S') {
+                board[i][j] = 'O';
+            }
+        }
+    }
+}
+
 void solve(char **board, int boardSize, int *boardColSize) {
     int i, j;
     printMatrix(board, boardSize, *boardColSize);
@@ -75,6 +89,9 @@ void solve(char **board, int boardSize, int *boardColSize) {
     }
     // puts("");
     printMatrix(board, boardSize, *boardColSize);
+    surround(board, boardSize, *boardColSize);
+    printf("\n");
+    printMatrix(board, boardSize, *boardColSize);
 }
 
 int main() {
@@ -92,15 +109,23 @@ int main() {
     // char board[4][4] = {{'X', 'X', 'X', 'X'}, {'X', 'O', 'O', 'X'}, {'X', 'X', 'O', 'X'}, {'X', 'O', 'X', 'X'}};
     // int m = sizeof(board) / sizeof(char[4]);
     // int n = sizeof(board[0]) / sizeof(char);
-    char *board[4];
-    board[0] = strdup("XXXX");
-    board[1] = strdup("XOOX");
-    board[2] = strdup("XXOX");
-    board[3] = strdup("XOXX");
-    int m = sizeof(board) / sizeof(char *);
+    // char *board[4];
+    // board[0] = strdup("XXXX");
+    // board[1] = strdup("XOOX");
+    // board[2] = strdup("XXOX");
+    // board[3] = strdup("XOXX");
+    char **board = (char **)malloc(4 * sizeof(char*));
+    int i;
+    for(i = 0; i < 4; i++) {
+        board[i] = (char*)malloc(5 * sizeof(char));
+    }
+    strcpy(board[0], "XXXX");
+    strcpy(board[1], "XOOX");
+    strcpy(board[2], "XXOX");
+    strcpy(board[3], "XOXX");
+    // int m = sizeof(board) / sizeof(char *);
+    int m = i;
     int n = strlen(board[0]);
     printf("%d %d\n", m, n);
     solve(board, m, &n);
-
-
 }
