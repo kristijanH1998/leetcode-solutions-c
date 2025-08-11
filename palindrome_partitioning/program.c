@@ -13,7 +13,7 @@ bool isPalindrome(char *s) {
     return true;
 }
 
-char **substrings(char *s, int sLen, char *currSubstr, char **substrArr, int takeChars, int cursor) {
+char ***substrings(char *s, int sLen, char *currSubstr, char ***substrArr, int takeChars, int cursor, int *returnSize, int subCount) {
     // int sLen = strlen(s);
     // char temp[sLen];
     // int start, subLen, first;
@@ -31,16 +31,24 @@ char **substrings(char *s, int sLen, char *currSubstr, char **substrArr, int tak
     //     }
     //     first++;
     // }
+    // printf("%d\n", takeChars);
     if(cursor >= (sLen)) {
-        puts(currSubstr);
+        // puts(currSubstr);
+        substrArr = (char***)realloc(substrArr, (*returnSize + 1) * sizeof(char **));
+        (*returnSize)++;
         return NULL;
     }
-    strncpy(currSubstr + cursor, s + cursor, takeChars);
-    char currSubstrCpy[sLen + 1];
-    strcpy(currSubstrCpy, currSubstr);
+    *(substrArr + *returnSize) = (char**)realloc(*(substrArr + *returnSize), (subCount + 1) * sizeof(char*));
+    *(*(substrArr + *returnSize) + subCount) = (char*)malloc(sLen * sizeof(char));
+    // strncpy(currSubstr + cursor, s + cursor, takeChars);
+    strncpy(*(*(substrArr + *returnSize) + subCount), s + cursor, takeChars);
+    
     int i; 
     for(i = 1; i < sLen; i++) {
-        substrings(s, sLen, currSubstrCpy, substrArr, i, cursor + takeChars);
+        char currSubstrCpy[sLen + 1];
+        memset(currSubstrCpy, 0, sizeof(currSubstrCpy));
+        strcpy(currSubstrCpy, currSubstr);
+        substrings(s, sLen, currSubstrCpy, substrArr, i, cursor + takeChars, returnSize, subCount + 1);
     }
     
     return NULL;
@@ -49,15 +57,21 @@ char **substrings(char *s, int sLen, char *currSubstr, char **substrArr, int tak
 char ***partition(char *s, int *returnSize, int **returnColumnSizes) {
     int sLen = strlen(s);
     char currSubstr[sLen + 1];
-    substrings(s, sLen, currSubstr, NULL, 0, 0);
+    memset(currSubstr, 0, sizeof(currSubstr));
+    char ***substrArr = (char ***)malloc(sizeof(char **));
+    *(substrArr) = (char **)malloc(sizeof(char *));
+    *(*(substrArr)) = (char *)malloc(sLen * sizeof(char));
+    substrArr = substrings(s, sLen, currSubstr, substrArr, 1, 0, returnSize, 0);
+    // for(int i = 0; i < *returnSize; i++) {
 
+    // }
     return NULL;
 }
 
 int main() {
     // printf("%d\n", isPalindrome("ebcba"));
-    int returnSize = 0;
+    int returnSize = 1;
     int *returnColumnSizes[] = {};
-    partition("abcde", &returnSize, returnColumnSizes);
+    partition("aab", &returnSize, returnColumnSizes);
     return 0;
 }
