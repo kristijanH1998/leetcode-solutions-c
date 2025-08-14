@@ -5,9 +5,9 @@
 void findSum(int **triangle, int triangleSize, int row, int numIndex, int pathSum, int *minSum) {
     // printf("%d ", triangle[row][numIndex]);
     pathSum += triangle[row][numIndex];
-    if(pathSum > *minSum) {
-        return;
-    } 
+    // if(pathSum > *minSum) {
+    //     return;
+    // } 
     if((row == (triangleSize - 1))) {
         if(pathSum < *minSum) {
             *minSum = pathSum;
@@ -45,6 +45,11 @@ int minimumTotal(int **triangle, int triangleSize, int *triangleColSize) {
 
 int main() {
     int rows = 4;
+    
+    // int rows = 1;
+    
+    // int rows = 3;
+
     int **triangle = (int**)malloc(rows * sizeof(int*));
     int numbers = 1;
     int triangleColSize[rows];
@@ -62,6 +67,16 @@ int main() {
     *(*(triangle + 3) + 1) = 1;
     *(*(triangle + 3) + 2) = 8;
     *(*(triangle + 3) + 3) = 3;
+    
+    // *(*(triangle + 0) + 0) = -10;
+    
+    // *(*(triangle + 0) + 0) = -1;
+    // *(*(triangle + 1) + 0) = 2;
+    // *(*(triangle + 1) + 1) = 3;
+    // *(*(triangle + 2) + 0) = 1;
+    // *(*(triangle + 2) + 1) = -1;
+    // *(*(triangle + 2) + 2) = -3;
+
     printf("%d\n", minimumTotal(triangle, rows, triangleColSize));
     return 0;
 }
