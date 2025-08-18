@@ -87,17 +87,26 @@ void generateIndices(int *indices, int indSize, int limit, int pos) {
     // if(indices[pos] > limit) {
     //     return;
     // }
-    for(i = 0; i < indSize; i++) {
-        printf("%d ", indices[i]);
+    if(pos == indSize) {
+        bool sorted = true;
+        for(i = 0; i < (indSize - 1); i++) {
+            if(indices[i] >= indices[i + 1]) {
+                sorted = false;
+            }
+        }
+        if(sorted) {
+            for(i = 0; i < indSize; i++) {
+                printf("%d ", indices[i]);
+            }
+            printf("\n");
+        }  
     }
-    printf("\n");
     int temp[indSize];
     memcpy(temp, indices, indSize * sizeof(int));
-    while(temp[pos] <= limit) {
+    while(temp[pos] <= (limit - (indSize - (pos + 1)))) {
         generateIndices(temp, indSize, limit, pos + 1);
         (temp[pos])++;
     }
-    
 }
 
 int main(void) {
