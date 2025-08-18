@@ -40,6 +40,22 @@ char *buildStr(char *s, int indices[], int numIndices) {
     return str;
 }
 
+int calcDistincts(char *s, char *t, int **indicesArr, int indicesCnt) {
+    int tLen = strlen(t);
+    int distincts = 0;
+    int i, j;
+    for(i = 0; i < indicesCnt; i++) {
+        if(strcmp(buildStr(s, *(indicesArr + i), tLen), t) == 0) {
+            distincts++;
+            for(j = 0; j < tLen; j++) {
+                printf("%d ", *(*(indicesArr + i) + j));
+            }
+            printf("\n");
+        }
+    }
+    return distincts;
+}
+
 int numDistinct(char *s, char *t) {
     int sLen = strlen(s);
     int tLen = strlen(t);
@@ -68,13 +84,14 @@ int numDistinct(char *s, char *t) {
     indicesArr = generateIndices(indices, tLen, sLen, 0, indicesArr, &indicesCnt);
     // printf("%d\n", indicesCnt);
     int j;
-    for(j = 0; j < indicesCnt; j++) {
-        for(i = 0; i < tLen; i++) {
-            printf("%d ", indicesArr[j][i]);
-        }
-        printf("\n");
-    }
-    return 0;
+    // for(j = 0; j < indicesCnt; j++) {
+    //     for(i = 0; i < tLen; i++) {
+    //         printf("%d ", indicesArr[j][i]);
+    //     }
+    //     printf("\n");
+    // }
+    int res = calcDistincts(s, t, indicesArr, indicesCnt);
+    return res;
 }
 
 int **generateIndices(int *indices, int indSize, int limit, int pos, int **indicesArr, int *indicesCnt) {
@@ -128,8 +145,10 @@ int **generateIndices(int *indices, int indSize, int limit, int pos, int **indic
 }
 
 int main(void) {
-    char *s = "babgbag";
-    char *t = "bag";
+    // char *s = "babgbag";
+    // char *t = "bag";
+    char s[] = "rabbbit";
+    char t[] = "rabbit";
     int res = numDistinct(s, t);
     printf("%d\n", res);
     return 0;
