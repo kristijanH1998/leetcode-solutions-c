@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
-void generateIndices(int *, int, int, int);
+int **generateIndices(int *, int, int, int, int **, int *);
 
 // int numDistinct(char *s, char *t) {
 //     int matches = 0;
@@ -62,14 +63,21 @@ int numDistinct(char *s, char *t) {
     // }
     // printf("\n");
     // puts(buildStr(s, indices, tLen));
-    generateIndices(indices, tLen, sLen, 0);
-
-
-
+    int **indicesArr = (int**)malloc(sizeof(int*));
+    int indicesCnt = 0;
+    indicesArr = generateIndices(indices, tLen, sLen, 0, indicesArr, &indicesCnt);
+    // printf("%d\n", indicesCnt);
+    int j;
+    for(j = 0; j < indicesCnt; j++) {
+        for(i = 0; i < tLen; i++) {
+            printf("%d ", indicesArr[j][i]);
+        }
+        printf("\n");
+    }
     return 0;
 }
 
-void generateIndices(int *indices, int indSize, int limit, int pos) {
+int **generateIndices(int *indices, int indSize, int limit, int pos, int **indicesArr, int *indicesCnt) {
     int i;
     // int temp[indSize];
     // for(i = 0; i < indSize; i++) {
@@ -95,18 +103,28 @@ void generateIndices(int *indices, int indSize, int limit, int pos) {
             }
         }
         if(sorted) {
-            for(i = 0; i < indSize; i++) {
-                printf("%d ", indices[i]);
+            int **newArr = realloc(indicesArr, (*indicesCnt + 1) * sizeof(int*));
+            if(!newArr) {
+                perror("realloc error");
+                exit(1);
             }
-            printf("\n");
+            indicesArr = newArr;
+            *(indicesArr + (*indicesCnt)) = (int*)malloc(indSize * sizeof(int));
+            memcpy(*(indicesArr + (*indicesCnt)), indices, indSize * sizeof(int));
+            (*indicesCnt)++;
+            // for(i = 0; i < indSize; i++) {
+            //     printf("%d ", indices[i]);
+            // }
+            // printf("\n");
         }  
     }
     int temp[indSize];
     memcpy(temp, indices, indSize * sizeof(int));
     while(temp[pos] <= (limit - (indSize - (pos + 1)))) {
-        generateIndices(temp, indSize, limit, pos + 1);
+        indicesArr = generateIndices(temp, indSize, limit, pos + 1, indicesArr, indicesCnt);
         (temp[pos])++;
     }
+    return indicesArr;
 }
 
 int main(void) {
