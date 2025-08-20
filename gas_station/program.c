@@ -46,8 +46,10 @@ int canCompleteCircuit(int *gas, int gasSize, int *cost, int costSize) {
 }
 
 int main() {
-    int gas[] = {1,2,3,4,5};
-    int cost[] = {3,4,5,1,2};
+    // int gas[] = {1,2,3,4,5};
+    // int cost[] = {3,4,5,1,2};
+    int gas[3] = {2, 3, 4};
+    int cost[3] = {3, 4, 3};
     int gasSize = sizeof(gas) / sizeof(int);
     int costSize = sizeof(cost) / sizeof(int);
     // printf("%d %d\n", gasSize, costSize);
