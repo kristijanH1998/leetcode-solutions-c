@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int canCompleteCircle(int *gas, int gasSize, int *cost, int costSize) {
+int canCompleteCircuit(int *gas, int gasSize, int *cost, int costSize) {
     int index = -1;
     if((gasSize != costSize) || (gasSize < 0) || (costSize < 0)) {
         return -1;
@@ -12,17 +12,32 @@ int canCompleteCircle(int *gas, int gasSize, int *cost, int costSize) {
     int i, j;
     int difference = 0;
     for(i = 0; i < gasSize; i++) {
-        for(j = i; j < gasSize; j++) {
+        difference += gas[i];
+        printf("+%d ", gas[i]);
+        for(j = i + 1; j < gasSize; j++) {
             difference += gas[j];
-            difference -= cost[j - 1];
+            if(j == 0) {
+                difference -= cost[gasSize - 1];
+                printf("+%d -%d ", gas[j], cost[gasSize - 1]);
+            } else {
+                difference -= cost[j - 1];
+                printf("+%d -%d ", gas[j], cost[j - 1]);
+            }   
         }
         for(j = 0; j < i; j++) {
             difference += gas[j];
-            difference -= cost[j - 1];
+            if(j == 0) {
+                difference -= cost[gasSize - 1];
+                printf("+%d -%d ", gas[j], cost[gasSize - 1]);
+            } else {
+                difference -= cost[j - 1];
+                printf("+%d -%d ", gas[j], cost[j - 1]);
+            }
         }
-        printf("%d\n", difference);
+        difference -= cost[j - 1];
+        printf("-%d diff: %d\n", cost[j], difference);
         if(difference == 0) {
-            index = j;
+            index = i;
             break;
         } 
         difference = 0;
@@ -36,7 +51,7 @@ int main() {
     int gasSize = sizeof(gas) / sizeof(int);
     int costSize = sizeof(cost) / sizeof(int);
     // printf("%d %d\n", gasSize, costSize);
-    int index = canCompleteCircle(gas, gasSize, cost, costSize);
+    int index = canCompleteCircuit(gas, gasSize, cost, costSize);
     printf("%d\n", index);
     return 0;
 }
