@@ -8,11 +8,53 @@ struct Node{
     struct Node **neighbors;
 };
 
+int inDiscovered(int *discoveredVals, int val, int nodesFound) {
+    int found = 0;
+    for(int i = 0; i < nodesFound; i++) {
+        if(discoveredVals[i] == val) {
+            found = 1;
+            break;
+        }
+    }
+    return found;
+}
+
+void traverseGraph(struct Node *s, struct Node *sCopy, int *discoveredVals, int nodesFound) {
+    if(s == NULL || discoveredVals == NULL) {
+        return;
+    }
+    nodesFound++;
+    discoveredVals = (int*)realloc(discoveredVals, nodesFound * sizeof(int));
+    *(discoveredVals + (nodesFound - 1)) = s->val;
+
+    // memcpy(sCopy, s, sizeof(struct Node));
+    sCopy->val = s->val;
+    sCopy->numNeighbors = s->numNeighbors;
+    printf("%d %d\n", sCopy->val, sCopy->numNeighbors);
+    sCopy->neighbors = (struct Node **)malloc(sCopy->numNeighbors * sizeof(struct Node *));
+
+    if(s->numNeighbors <= 0 || s->neighbors == NULL) {
+        return;
+    }
+    for(int i = 0; i < s->numNeighbors; i++) {
+        if(!inDiscovered(discoveredVals, s->neighbors[i]->val, nodesFound)) {
+            struct Node *copyFrame = (struct Node *)malloc(sizeof(struct Node)); 
+            traverseGraph(s->neighbors[i], copyFrame, discoveredVals, nodesFound);
+            sCopy->neighbors[i] = copyFrame;
+        }
+    }
+}
+
 struct Node *cloneGraph(struct Node *s) {
-
-
-
-    return NULL;
+    if(s == NULL) {
+        return NULL;
+    }
+    int nodesFound = 1;
+    int *discoveredVals = (int*)malloc(sizeof(int) * nodesFound);
+    *discoveredVals = s->val;
+    struct Node *sCopy = (struct Node *)malloc(sizeof(struct Node));
+    traverseGraph(s, sCopy, discoveredVals, nodesFound);
+    return sCopy;
 }
 
 int main() {
@@ -57,16 +99,12 @@ int main() {
     memcpy(*(adjList + 2), n3->neighbors, 2 * sizeof(struct Node *));
     *(adjList + 3) = (struct Node **)malloc(2 * sizeof(struct Node *));
     memcpy(*(adjList + 3), n4->neighbors, 2 * sizeof(struct Node *));
-    for(int i = 0; i < nodesSize; i++) {
-        printf("%d %d\n", (*(*(adjList + i) + 0))->val, (*(*(adjList + i) + 1))->val);
-    }
-
-
-
+    // for(int i = 0; i < nodesSize; i++) {
+    //     printf("%d %d\n", (*(*(adjList + i) + 0))->val, (*(*(adjList + i) + 1))->val);
+    // }
     struct Node *n1Cpy = cloneGraph(n1);
-
-
-
-
+    printf("%d\n", n1Cpy->val);
+    printf("%d\n", n1Cpy->neighbors[0]->val);
+    printf("%d\n", n1Cpy->neighbors[1]->val);
     return 0;
 }
