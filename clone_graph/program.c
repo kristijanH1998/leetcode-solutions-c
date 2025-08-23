@@ -8,9 +8,11 @@ struct Node{
     struct Node **neighbors;
 };
 
-int inDiscovered(int *discoveredVals, int val, int nodesFound) {
+void printGraph(struct Node *s, int **printedVals, int *nodesPrinted);
+
+int inDiscovered(int *discoveredVals, int val, int *nodesFound) {
     int found = 0;
-    for(int i = 0; i < nodesFound; i++) {
+    for(int i = 0; i < (*nodesFound); i++) {
         if(discoveredVals[i] == val) {
             found = 1;
             break;
@@ -19,13 +21,13 @@ int inDiscovered(int *discoveredVals, int val, int nodesFound) {
     return found;
 }
 
-void traverseGraph(struct Node *s, struct Node *sCopy, int *discoveredVals, int nodesFound) {
-    if(s == NULL || discoveredVals == NULL) {
+void traverseGraph(struct Node *s, struct Node *sCopy, int **discoveredVals, int *nodesFound) {
+    if(s == NULL || discoveredVals == NULL || *discoveredVals == NULL) {
         return;
     }
-    nodesFound++;
-    discoveredVals = (int*)realloc(discoveredVals, nodesFound * sizeof(int));
-    *(discoveredVals + (nodesFound - 1)) = s->val;
+    (*nodesFound)++;
+    *discoveredVals = (int*)realloc(*discoveredVals, (*nodesFound) * sizeof(int));
+    *(*discoveredVals + ((*nodesFound) - 1)) = s->val;
 
     // memcpy(sCopy, s, sizeof(struct Node));
     sCopy->val = s->val;
@@ -33,11 +35,11 @@ void traverseGraph(struct Node *s, struct Node *sCopy, int *discoveredVals, int 
     printf("%d %d\n", sCopy->val, sCopy->numNeighbors);
     sCopy->neighbors = (struct Node **)malloc(sCopy->numNeighbors * sizeof(struct Node *));
 
-    if(s->numNeighbors <= 0 || s->neighbors == NULL) {
+    if((s->numNeighbors) <= 0 || s->neighbors == NULL) {
         return;
     }
-    for(int i = 0; i < s->numNeighbors; i++) {
-        if(!inDiscovered(discoveredVals, s->neighbors[i]->val, nodesFound)) {
+    for(int i = 0; i < (s->numNeighbors); i++) {
+        if(!inDiscovered(*discoveredVals, (s->neighbors[i])->val, nodesFound)) {
             struct Node *copyFrame = (struct Node *)malloc(sizeof(struct Node)); 
             traverseGraph(s->neighbors[i], copyFrame, discoveredVals, nodesFound);
             sCopy->neighbors[i] = copyFrame;
@@ -51,10 +53,30 @@ struct Node *cloneGraph(struct Node *s) {
     }
     int nodesFound = 1;
     int *discoveredVals = (int*)malloc(sizeof(int) * nodesFound);
-    *discoveredVals = s->val;
+    // *discoveredVals = s->val;
     struct Node *sCopy = (struct Node *)malloc(sizeof(struct Node));
-    traverseGraph(s, sCopy, discoveredVals, nodesFound);
+    traverseGraph(s, sCopy, &discoveredVals, &nodesFound);
+    int nodesPrinted = 0;
+    int *printedVals = (int*)malloc(sizeof(int));
+    // printGraph(s, &printedVals, &nodesPrinted);
+    // free(printedVals);
+    // printGraph(sCopy, &printedVals, &nodesPrinted);
     return sCopy;
+}
+
+void printGraph(struct Node *s, int **printedVals, int *nodesPrinted) {
+    if(s == NULL || printedVals == NULL || *printedVals == NULL) {
+        return;
+    }
+    printf("Node #%d: value %d address %p\n", *nodesPrinted + 1, s->val, s);
+    *(*printedVals + (*nodesPrinted)) = s->val;
+    (*nodesPrinted)++;
+    *printedVals = (int*)realloc(*printedVals, ((*nodesPrinted) + 1) * sizeof(int));
+    for(int i = 0; i < (s->numNeighbors); i++) {
+        if(!inDiscovered(*printedVals, (s->neighbors[i])->val, nodesPrinted)) {
+            printGraph((s->neighbors[i]), printedVals, nodesPrinted);
+        }
+    }
 }
 
 int main() {
@@ -105,6 +127,7 @@ int main() {
     struct Node *n1Cpy = cloneGraph(n1);
     printf("%d\n", n1Cpy->val);
     printf("%d\n", n1Cpy->neighbors[0]->val);
+    printf("%d\n", n1Cpy->numNeighbors);
     printf("%d\n", n1Cpy->neighbors[1]->val);
     return 0;
 }
