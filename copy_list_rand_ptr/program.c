@@ -9,10 +9,12 @@ struct Node {
 
 int findRandom(struct Node *head, struct Node *randPtr) {
     int i = 0;
+    struct Node *headTemp = head;
     while(head != NULL && head != randPtr) {
         i++;
         head = head->next;
     }
+    head = headTemp;
     return i;
 }
 
@@ -22,6 +24,7 @@ struct Node *copyRandomList(struct Node *head) {
     }
     struct Node *headCpy = (struct Node *)malloc(sizeof(struct Node));
     struct Node *headCpyTemp = headCpy;
+    struct Node *headTemp = head;
     while(head != NULL) {
         headCpy->val = head->val;
         if(head->next) {
@@ -31,6 +34,19 @@ struct Node *copyRandomList(struct Node *head) {
         }
         head = head->next;
         headCpy = headCpy->next;
+    }
+    headCpy = headCpyTemp;
+    head = headTemp;
+    int i;
+    struct Node *headCpyTempRand = headCpyTemp;
+    while(head != NULL) {
+        for(i = findRandom(headTemp, head->random); i > 0; i--) {
+            headCpyTempRand = headCpyTempRand->next;
+        } 
+        headCpy->random = headCpyTempRand;
+        headCpyTempRand = headCpyTemp;
+        headCpy = headCpy->next;
+        head = head->next;
     }
     headCpy = headCpyTemp;
     return headCpy;
