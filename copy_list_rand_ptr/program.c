@@ -17,9 +17,23 @@ int findRandom(struct Node *head, struct Node *randPtr) {
 }
 
 struct Node *copyRandomList(struct Node *head) {
-
-
-    return NULL;
+    if(head == NULL) {
+        return NULL;
+    }
+    struct Node *headCpy = (struct Node *)malloc(sizeof(struct Node));
+    struct Node *headCpyTemp = headCpy;
+    while(head != NULL) {
+        headCpy->val = head->val;
+        if(head->next) {
+            headCpy->next = (struct Node *)malloc(sizeof(struct Node));
+        } else {
+            headCpy->next = NULL;
+        }
+        head = head->next;
+        headCpy = headCpy->next;
+    }
+    headCpy = headCpyTemp;
+    return headCpy;
 }
 
 int main() {
@@ -43,11 +57,26 @@ int main() {
     n3->random = n5;
     n4->random = n3;
     n5->random = n1;
+    struct Node *n1Temp = n1;
+    int i;
+    printf("Node Addresses:\n");
+    for(i = 1; n1 != NULL; i++) {
+        printf("n%d: %p rand ptr: %p\n", i, n1, n1->random);
+        n1 = n1->next;
+    }
+    n1 = n1Temp;
     struct Node *headCpy = copyRandomList(n1);
+    struct Node *headCpyTemp = headCpy;
     while(headCpy != NULL) {
         printf("%d ", headCpy->val);
         headCpy = headCpy->next;
     }
+    headCpy = headCpyTemp;
     printf("\n");
-    printf("%d\n%d\n", findRandom(n1, n4->random), findRandom(n1, n3->random));
+    printf("Copy List Node Addresses:\n");
+    for(i = 1; headCpy != NULL; i++) {
+        printf("n%d: %p rand ptr: %p\n", i, headCpy, headCpy->random);
+        headCpy = headCpy->next;
+    }
+    // printf("%d\n%d\n", findRandom(n1, n4->random), findRandom(n1, n3->random));
 }
