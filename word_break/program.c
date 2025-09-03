@@ -11,6 +11,7 @@ void breakString(char *currentS, char **wordDict, int wordDictSize, char *dictSt
     // strncpy(rightSide, currentS + rightStart, strlen(currentS) - rightStart);
     // char *leftSide = 
     // printf("%s %d\n", currentS, strlen(currentS));
+    puts(currentS);
     if(*test == 1) {
         return;
     }
@@ -44,10 +45,10 @@ void breakString(char *currentS, char **wordDict, int wordDictSize, char *dictSt
 }
 
 bool wordBreak(char *s, char **wordDict, int wordDictSize) {
-    // for(int i = 0; i < wordDictSize; i++) {
-    //     printf("%s ", wordDict[i]);
-    // }
-    // printf("\n");
+    for(int i = 0; i < wordDictSize; i++) {
+        printf("%s ", wordDict[i]);
+    }
+    printf("\n");
     // int i;
     // for(i = 0; i < wordDictSize; i++) {
 
@@ -58,15 +59,25 @@ bool wordBreak(char *s, char **wordDict, int wordDictSize) {
 }
 
 int main() {
-    char *wordDict[] = {"cats", "dog", "sand", "and", "cat"};
+    // char *wordDict[] = {"cats", "dog", "sand", "and", "cat"};
     // char *wordDict[] = {"leet", "code"};
     // char *wordDict[] = {"apple", "pen"};
-    int wordDictSize = sizeof(wordDict) / sizeof(char *);
+    char **wordDict = (char**)malloc(4 * sizeof(char*));
+    wordDict[0] = (char*)malloc(2 * sizeof(char));
+    wordDict[0] = "a";
+    wordDict[1] = (char*)malloc(2 * sizeof(char));
+    wordDict[1] = "b";
+    wordDict[2] = (char*)malloc(4 * sizeof(char));
+    wordDict[2] = "bbb";
+    wordDict[3] = (char*)malloc(5 * sizeof(char));
+    wordDict[3] = "bbbb";
+    // int wordDictSize = sizeof(wordDict) / sizeof(char *);
     // printf("%d\n", wordDictSize);
-    char *s = "catsandog";
+    // char *s = "catsandog";
     // char *s = "leetcode";
     // char s[] = "applepenapple";
-    int test = wordBreak(s, wordDict, wordDictSize);
+    char *s = "bb";
+    int test = wordBreak(s, wordDict, 4);
     fputs(test > 0 ? "True\n" : "False\n", stdout);
     //////////////////////////
     // char *(*strings)[wordDictSize];
